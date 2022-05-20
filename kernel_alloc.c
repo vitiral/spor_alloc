@@ -55,7 +55,7 @@ block_t* BA_alloc(BlockAllocator* ba, uint8_t* clientRooti) {
 void BA_free(BlockAllocator* ba, uint8_t* clientRooti, block_t* b) {
   // Assert block is within blocks memory region
   assert(b >= ba->blocks);
-  uint8_t ci = (b - ba->blocks) >> BLOCK_PO2; // index of 'c'
+  uint8_t ci = BA_index(ba, b);
   assert(ci < ba->cap);
 
   BlockNode* c = &ba->nodes[ci]; // node 'c'
@@ -85,7 +85,9 @@ void BA_free(BlockAllocator* ba, uint8_t* clientRooti, block_t* b) {
 //   clientRoot -> END
 //   baRoot     -> a -> b -> c -> d -> e -> f
 void BA_freeAll(BlockAllocator* ba, uint8_t* clientRooti) {
-  while(BLOCK_END != *clientRooti) BA_free(ba, clientRooti, &ba->blocks[*clientRooti]);
+  while(BLOCK_END != *clientRooti) {
+    BA_free(ba, clientRooti, &ba->blocks[*clientRooti]);
+  }
 }
 
 // Reserve space if too small. Return false if not enough space.

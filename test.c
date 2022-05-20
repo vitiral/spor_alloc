@@ -33,9 +33,15 @@ void testAllocFree() {
   assert(BLOCK_END == ba.nodes[0].nexti);
 
   // baRoot -> b -> c
-  assert(1     == ba.rooti);
+  assert(1         == ba.rooti);
   assert(BLOCK_END == ba.nodes[1].previ);
   assert(2         == ba.nodes[1].nexti);
+
+  BA_free(&ba, &crooti, a);
+  assert(BLOCK_END == crooti);
+  assert(BLOCK_END == ba.nodes[0].previ);
+  assert(1         == ba.nodes[0].nexti);
+  assert(0         == ba.nodes[1].previ);
 
   BA_drop(ba);
 }
@@ -66,9 +72,46 @@ void testAlloc2FreeFirst() {
   BA_drop(ba);
 }
 
+void testBBA() {
+  printf("## testBBA\n");
+  uint8_t crooti = BLOCK_END; // clientRoot
+  BlockAllocator ba;
+  BA_new(ba, 4);
+  BlockBumpArena bba = BBA_new(&ba);
+
+  BBAReturn ret = BBA_alloc(&bba, 12);
+  assert(0                               == ret.leftoverSize);
+  assert(&ba.blocks[0] + BLOCK_SIZE - 12 == ret.data);
+
+  ret = BBA_alloc(&bba, BLOCK_SIZE);
+  assert(BLOCK_SIZE - 12                 == ret.leftoverSize);
+  assert(&ba.blocks[0]                   == ret.leftover);
+  assert(&ba.blocks[1]                   == ret.data);
+
+  ret = BBA_allocUnaligned(&bba, 13);
+  assert(0                               == ret.leftoverSize);
+  assert(&ba.blocks[2]                   == ret.data);
+
+  ret = BBA_allocUnaligned(&bba, 25);
+  assert(0                               == ret.leftoverSize);
+  assert(&ba.blocks[2] + 13              == ret.data);
+
+  ret = BBA_allocUnaligned(&bba, BLOCK_SIZE - 20);
+  assert(BLOCK_SIZE - 13 - 25            == ret.leftoverSize);
+  assert(&ba.blocks[3]                   == ret.data);
+
+  ret = BBA_alloc(&bba, BLOCK_SIZE);
+  assert(20                              == ret.leftoverSize);
+  assert(NULL                            == ret.data);
+
+  BBA_drop(bba);
+  BA_drop(ba);
+}
+
 int main() {
   printf("Starting Tests\n");
   testNew();
   testAllocFree();
   testAlloc2FreeFirst();
+  testBBA();
 }

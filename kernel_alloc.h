@@ -38,15 +38,18 @@ typedef struct {
 } BBAReturn;
 
 void     kernel_hello();
+#define  BA_index(BA, BLOCK)   ( \
+    ((uint8_t*) (BLOCK) - (uint8_t*) (BA)->blocks) \
+    >> BLOCK_PO2)
 void     BA_init     (BlockAllocator* a);
 block_t* BA_alloc    (BlockAllocator* a, uint8_t* clientRooti);
 void     BA_free     (BlockAllocator* a, uint8_t* clientRooti, block_t* b);
 void     BA_freeAll  (BlockAllocator* a, uint8_t* clientRooti);
 
-#define    BBA_new(BA) BlockBumpArena { .ba=BA, .ba_rooti=BLOCK_END, .len=0, .cap=0 };
+#define    BBA_new(BA) { .ba=BA, .ba_rooti=BLOCK_END, .len=0, .cap=0 };
 BBAReturn  BBA_alloc           (BlockBumpArena* bba, uint16_t size);
 BBAReturn  BBA_allocUnaligned  (BlockBumpArena* bba, uint16_t size);
-#define    BBA_drop(BBA)       BA_freeAll(&(BBA)->ba)
+#define    BBA_drop(BBA)       BA_freeAll((BBA).ba, &(BBA).ba_rooti)
 
 // Convience macro to malloc new block allocator. Remember to free it!
 #define BA_new(BA, NUM_BLOCKS)                                  \
