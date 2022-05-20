@@ -11,14 +11,14 @@ Library Contents:
   up to `1MiB - 4KiB`).
 - `BlockBumpArena` allocator: an arena allocator that efficiently "bump
   allocates" memory of any size less than a block (aligned or unaligned). It
-  gets it's blocks of memory from a BlockAllocator. Dropping the arena will drop
+  gets its blocks of memory from a BlockAllocator. Dropping the arena will drop
   all the blocks it owns, but otherwise it has no mechanism to free memory so
   use for applications that don't alloc/free dynamically (but might free an
   entire arena).
 
 The BlockAllocator is suitable for building many other low-level allocators on
-top of (i.e. buddy, slab, etc). Because memory is allocated and freed in 4KiB
-blocks, there can be no fragmentation if used correctly.
+top of (i.e. bump, buddy, slab, etc). Because memory is allocated and freed in
+4KiB blocks, there can be no fragmentation if used correctly.
 
 The BlockBumpArena is built on the BlockAllocator and is suitable (among other
 usecases) for storing a "code heap" and "code metadata" (i.e.  a dictionary
