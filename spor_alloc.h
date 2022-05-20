@@ -1,5 +1,8 @@
-#ifndef __KERNEL_ALLOC_H
-#define __KERNEL_ALLOC_H
+// Author: Garrett Berg (github.com/vitiral/spor_alloc)
+// Attribution appreciated but not required, this is community commons software.
+
+#ifndef __SPOR_ALLOC_H
+#define __SPOR_ALLOC_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -32,12 +35,11 @@ typedef struct {
 } BlockBumpArena;
 
 typedef struct {
-  void* data;            // data of the size requested
-  void* leftover;        // leftover data
+  void*    data;            // data of the size requested
+  void*    leftover;        // leftover data
   uint16_t leftoverSize;
 } BBAReturn;
 
-void     kernel_hello();
 #define  BA_index(BA, BLOCK)   ( \
     ((uint8_t*) (BLOCK) - (uint8_t*) (BA)->blocks) \
     >> BLOCK_PO2)
@@ -65,4 +67,4 @@ BBAReturn  BBA_allocUnaligned  (BlockBumpArena* bba, uint16_t size);
     BA.cap = 0;             \
     BA.rooti = BLOCK_END;
 
-#endif // __KERNEL_ALLOC_H
+#endif // __SPOR_ALLOC_H

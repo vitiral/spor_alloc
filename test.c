@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "kernel_alloc.h"
+#include "spor_alloc.h"
 
 void testNew() {
   printf("## testNew\n");

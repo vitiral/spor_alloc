@@ -1,7 +1,9 @@
+// Author: Garrett Berg (github.com/vitiral/spor_alloc)
+// Attribution appreciated but not required, this is community commons software.
 
 #include <stdio.h>
 #include <assert.h>
-#include "kernel_alloc.h"
+#include "spor_alloc.h"
 
 void BA_init(BlockAllocator* ba) {
   if(ba->cap == 0) return;

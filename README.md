@@ -1,7 +1,7 @@
-# Kernel Alloc
+# Spor Alloc
 
 This is a small (single header, single source) C library for kernel memory
-managers for the [fngi] language, or anyone else who wants to use them.
+managers for the spor/[fngi] language, or anyone else who wants to use them.
 
 Library Contents:
 
@@ -25,6 +25,17 @@ usecases) for storing a "code heap" and "code metadata" (i.e.  a dictionary
 using a BST) on top of. In [fngi] it is used to store module-level code and
 metadata -- like function names, constants, types, etc -- which can be dropped
 if/when a module is no longer needed.
+
+## Using / Testing the Code
+To use this library in your project, simply copy paste `spor_alloc.c` and
+`spor_alloc.h` into your library. No attribution is necessary, but it is
+appreciated!
+
+To compile and test:
+
+```
+$ gcc spor_alloc.c test.c && ./a.out
+```
 
 ## LICENSING
 
